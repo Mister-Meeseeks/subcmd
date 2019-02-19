@@ -218,6 +218,13 @@ CMDS
 --cmds
 --Cmds
 --CMDS
+CMD
+-cmd
+-Cmd
+-CMD
+--cmd
+--Cmd
+--CMD
 EOF
 }
 
