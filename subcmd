@@ -4,6 +4,103 @@ entryPoint=$1
 shift;
 cliArgs=$@
 
+function helpForCmd() {
+    cat <<EOF
+subcmd
+
+Convert directory tree of executables into CLI sub-commands. 
+
+subcmd entryPath [sub commands]     # eval mode
+subcmd init entryPath [cmdTree]     # init mode
+
+eval mode - Evaluates a pre-existing subcmd entry point. The
+arguments are evaluated in the cmd tree until an executable
+is found. At which point that executable is invoked by the
+shell with any unconsumed arguments passed in. Most times you
+won't use this directly, just set the entrypoint's shebang:
+
+    #!/usr/bin/env subcmd
+
+init mode - Creates a new subcmd entrypoint and an empty
+directory for the cmd tree. If no cmdTree is specified the default
+companion directory will be used.
+
+EOF
+    >&2
+    exit 1
+}
+
+function initTree() {
+    local entryPath=$1
+    if isHelpCmd $entryPath ; then
+	helpForCmd
+    fi
+    
+    local cmdTree=$entryPath-subCmd
+    local specTree=""
+    if [[ $# -ge 2 ]] ; then
+	local cmdTree=$2
+	local specTree=$cmdTree
+    fi
+    
+    assertFreshInit $entryPath $cmdTree
+    createFresh $entryPath $cmdTree "$specTree"
+}
+
+function assertFreshInit() {
+    local entryPath=$1
+    local cmdTree=$2
+    if [[ -e $entryPath ]] ; then
+	echo "subcmd Error: Cannot init - entryPath already exists -" \
+	     "$entryPath" >&2
+	exit 1
+    elif [[ -e $cmdTree ]] ; then
+	echo "subcmd Error: Cannot init - cmdTree already exists -" \
+	     "$cmdTree" >&2
+	exit 1
+    fi
+}
+
+function createFresh() {
+    local entryPath=$1
+    local cmdTree=$2
+    local specTree=$3
+    formEntryContent $specTree > $entryPath
+    chmod a+rx $entryPath
+    mkdir $cmdTree
+    declareInit $entryPath $cmdTree >&2
+}
+
+function formEntryContent() {
+    echo "#!/usr/bin/env subcmd"
+    echo
+    if [[ $# -ge 1 ]] ; then
+	echo $1
+    fi
+}
+
+function declareInit() {
+    local entryPath=$1
+    local cmdTree=$2
+    echo "New subcmd tree initialized."
+    echo
+    echo "To create sub-commands add executables to the cmdTree:"
+    echo $(formatExecView $cmdTree/)
+    echo
+    echo "Command can be invoked by calling the entrypoint at: "
+    echo $(formatExecView $entryPath)
+    echo
+}
+
+function formatExecView() {
+    local entryPath=$1
+    if isAbsPath $entryPath ; then
+	echo $entryPath
+    else
+	echo ./$entryPath
+    fi
+}
+
 function discoverTree() {
     local treeSpec=$(scanTreeSpec)
     if [[ -z $treeSpec ]] ; then
@@ -187,6 +284,18 @@ function failWithReason() {
     exit 1
 }
 
+## help mode for subcmd itself
+if isHelpCmd $entryPoint ; then
+    helpForCmd
+fi
+
+## init mode - prepare a new subcmd tree
+if [[ $entryPoint == "init" ]] ; then
+    initTree $@
+    exit 0
+fi
+
+## Standard eval mode - called from shebang line
 cmdTree=$(discoverTree)
 descent=$cmdTree
 
