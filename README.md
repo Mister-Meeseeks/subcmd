@@ -86,7 +86,7 @@ Alright! Now let's try the subcommand that. From the command line:
     $ ./hello world
     Hello, World!
    
-There we go. Our first subcmd app.
+There we go. Our first subcmd app. To explore more, check out the examples/ dir in the repo.
 
 ## Install
 
