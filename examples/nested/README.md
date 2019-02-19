@@ -1,5 +1,5 @@
 
-* sounds *
+## sounds
 
 This example shows how the nested directory structure is mirrored
 in the subcommand tree.
