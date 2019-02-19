@@ -57,13 +57,12 @@ Now let's try out our new sub-command. We list out what sub-commands are availab
 
     ./hello CMD
     
-You'll see we don't have anything in the subcommand tree.
+You'll see we have an empty subcommand tree.
 
     ------- Valid Sub-Commands for hello-subcmd -----
-
     --------------------------------------------
 
-Let's create a subcommand. Create an exectuable inside the subcommand tree. From the shell:
+Let's make a subcommand. Create an exectuable inside the subcommand tree. From the shell:
 
     touch hello-subcmd/world && chmod u+x hello-subcmd/world
     
