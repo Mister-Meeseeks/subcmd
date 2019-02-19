@@ -60,7 +60,6 @@ Now let's try out our new sub-command. We list out what sub-commands are availab
 You'll see we have an empty subcommand tree.
 
     ------- Valid Sub-Commands for hello-subcmd -----
-    --------------------------------------------
 
 Let's make a subcommand. Create an exectuable inside the subcommand tree. From the shell:
 
@@ -76,9 +75,7 @@ Now, let's check our entry point, from the command line:
 
     $ ./hello CMD
     ------ Valid Sub-Commands for hello-subcmd -----
-    
     world
-    
     --------------------------------------------
 
 Alright! Now let's try the subcommand that. From the command line:
@@ -129,8 +126,7 @@ You can also specify an alternative location for the companion command tree by i
 
 The command tree is just a normal filesystem directory. Any sub-directory is a composite of subcommand based
 on that directory's contents. Any executable file in a terminal subcommand. Subcommands can be arbitrarily
-nested. For example consider that `pop` is an exectuable inside the following path inside the command tree
-directory:
+nested. For example, say `pop` is an exectuable inside the command tree at the following path:
 
     [cmdTree root]/snap/crackle/pop
     
@@ -150,13 +146,12 @@ Some other details:
 
 submcd allows for the CMD keyword directive to be added to any composite subcommand in a command tree.
 Instead of normal processing, it will list all available commands contained by that subcommand. This 
-can  be used to probe the command tree structure from the command line. E.g.
+can be used to probe the command tree structure from the command line. E.g.
 
     $ [appCmd] snap crackle CMD
     
     ------ Valid Sub-Commands for hello-subcmd -----
-    world
-    --------------------------------------------
+    pop
 
 ## Help Messages
 
