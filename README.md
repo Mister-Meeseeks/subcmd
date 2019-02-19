@@ -81,7 +81,7 @@ Now, let's check our entry point, from the command line:
     
     world
     
-   --------------------------------------------
+    --------------------------------------------
 
 Alright! Now let's try the subcommand that. From the command line:
 
