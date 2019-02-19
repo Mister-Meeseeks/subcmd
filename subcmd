@@ -1,0 +1,170 @@
+#!/bin/bash -eu
+
+entryPoint=$1
+shift;
+cliArgs=$@
+
+function discoverTree() {
+    local treeSpec=$(scanTreeSpec)
+    if [[ -z $treeSpec ]] ; then
+	companionTree $entryPoint
+    else
+	resolveSpec $entryPoint $treeSpec
+    fi
+}
+
+function scanTreeSpec() {
+    cat $entryPoint \
+	| egrep -v "^#" \
+	| tail -n 1
+}
+
+function companionTree() {
+    local entryPoint=$1
+    local companionTree=$(formCompanion $entryPoint)
+    assertCompanion $companionTree
+    echo $companionTree
+}
+
+function assertCompanion() {
+    local companionTree=$1
+    if [[ ! -d $companionTree ]] ; then
+	echo "subcmd Error: No dir-tree specified and companion directory" \
+	     "does not exist:" $companionTree >&2
+	exit 1
+    fi
+    
+}
+
+function formCompanion() {
+    local entryPoint=$1
+    local canonEntry=$(readlink -f $entryPoint)
+    echo $(dirname $canonEntry)/$(basename $canonEntry)-subcmd/
+}
+
+
+function resolveSpec() {
+    local entryPoint=$1
+    local treeSpec=$2
+    local treePath=$(locateTreePath $entryPoint $treeSpec)
+    assertSpec $treePath
+    echo $treePath
+}
+
+function locateTreePath() {
+    local entryPoint=$1
+    local treeSpec=$2
+    if isAbsPath $treeSpec ; then
+	echo $treeSpec
+    else
+	relatePathFrom $entryPoint $treeSpec
+    fi
+}
+
+function relatePathFrom() {
+    local entryPoint=$1
+    local treeSpec=$2
+    local canonEntry=$(readlink -f $entryPoint)
+    local rootDir=$(dirname $canonEntry)
+    echo $rootDir/$treeSpec
+}
+
+function assertSpec() {
+    local treePath=$1
+    if [[ -d $treePath ]] ; then
+	echo "subcmd Error: User specified dir-tree path does not exist:" \
+	     $treePath >&2
+	exit 1
+    fi
+}
+
+function isHelpCmd() {
+    local subCmd=$1
+    listHelpWords | egrep -q "^$subCmd$"
+}
+
+function listHelpWords() {
+    cat <<EOF
+--help
+--Help
+help
+Help
+HELP
+-h
+-H
+--h
+--H
+-help
+-Help
+EOF
+}
+
+function yellForHelp() {
+    local descentDir=$1
+    echo "Command Help:" $cliArgs
+    if [[ -f $descentDir/help ]] ; then
+	cat $descentDir/help
+    elif [[ -f $descentDir/help.txt ]] ; then
+	cat $descentDir/help.txt
+    else
+	echo "subcmd Error: No Help file found at $descentDir" >&2
+	exit 1
+    fi
+}
+
+function failNonExec() {
+    failWithReason $1/$2 "is not executable"
+}
+
+function failBrokenLink() {
+    failWithReason $1/$2 "is a broken link"
+}
+
+function failMissing() {
+    failWithReason $1/$2 "does not exist"
+}
+
+function failDanglingDir() {
+    failWithReason $1 "is a directory"
+}
+
+function failWithReason() {
+    local tryPath=$1
+    local reason=$2
+    echo "subcmd Error: $tryPath" $reason >&2
+    yellForHelp $tryPath
+    exit 1
+}
+
+cmdTree=$(discoverTree)
+descent=$cmdTree
+
+while [[ $# -gt 0 ]] ; do
+
+    if isHelpCmd $1 ; then
+	yellForHelp $descent
+	exit 0
+    
+    elif [[ -d $descent/$1 ]] ; then
+	descent=$descent/$1
+	shift
+	
+    elif [[ -x $descent/$1 ]] ; then
+	executor=$descent/$1
+	shift
+	$executor $@
+	exit 0
+	
+    elif [[ -e $descent/$1 ]] ; then
+	failNonExec $descent $1
+	
+    elif [[ -L $descent/$1 ]] ; then
+	failBrokenLink $descent $1
+	
+    else
+	failMissing $descent $1
+    fi
+done
+
+failDanglingDir $descent
+	
