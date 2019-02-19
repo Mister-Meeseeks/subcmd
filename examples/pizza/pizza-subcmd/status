@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+
+echo Hi $(whoami)! Your Pizza is one the Way

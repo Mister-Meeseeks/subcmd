@@ -1,0 +1,12 @@
+#!/bin/bash -eu
+
+if [[ $# -gt 0 ]] ; then
+    payment=$1
+else
+    echo "You must apply a payment over 0.0" >&2
+    exit 1
+fi
+
+echo "You've paid $payment to your pizza bill."
+
+

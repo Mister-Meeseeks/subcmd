@@ -1,0 +1,9 @@
+#!/bin/bash -eu
+
+orderId=$(cat $(dirname $0)/order.id)
+
+if [[ -z $orderId ]] ; then
+   echo "You have no order open"
+else
+    echo "Your order (#$orderId) is on the way!"
+fi

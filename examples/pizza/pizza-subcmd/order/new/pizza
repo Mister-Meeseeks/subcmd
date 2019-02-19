@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+import os
+import argparse
+import random
+
+parser = argparse
+parser = argparse.ArgumentParser(description='Orders a new Pizza.')
+parser.add_argument('--xl', action='store_true',
+                    help='Mzke it an extra large')
+parser.add_argument('--deepDish', action='store_true',
+                    help="Deep dish style")
+parser.add_argument('--qty', type=int, default=1,
+                    help="Qty in order")
+parser.add_argument('toppings', nargs='*', default=["cheese"],
+                    help='Toppings to add')
+
+args = parser.parse_args()
+
+desc = "piping hot"
+if (args.xl):
+    desc = desc + " extra-large"
+if (args.deepDish):
+    desc = desc + " deep-dish"
+
+print "----New Order----"
+print "%d %s pizza with the following toppings: " % (args.qty, desc)
+for top in args.toppings:
+    print "  - %s" % top
+print "-----------------"
+
+cmd_dir = os.path.dirname(os.path.realpath(__file__))
+order_id_path = cmd_dir + "/../order.id"
+
+order_id = random.randint(1,9999)
+
+fd = open(order_id_path, 'w')
+print >>fd, order_id 
+fd.close()
+
+print "OrderID: %d" % order_id
+print
+

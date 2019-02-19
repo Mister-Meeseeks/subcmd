@@ -1,0 +1,11 @@
+#!/bin/bash -eu
+
+orderDb=$(dirname $0)/order.id
+orderId=$(cat $orderDb)
+
+if [[ -z $orderId ]] ; then
+   echo "You have no order to cancel"
+else
+    rm $orderDb && touch $orderDb
+    echo "Your order (#$orderId) has been cancelled"
+fi

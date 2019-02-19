@@ -1,0 +1,7 @@
+#!/bin/bash -eu
+
+acctDb=$(dirname $0)/acct.db
+balance=$(grep Balance $acctDb | cut -d = -f 2)
+
+echo "Your current balance at the pizza shop is \$$balance"
+
