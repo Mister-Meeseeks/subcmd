@@ -183,7 +183,7 @@ of any other help files in the command tree.
 Also note that for terminal commands (i.e. executable leaves in the directory tree), help flags are
 passed straight through to the executable and not handled by subcmd. 
 
-## Entrypoint
+## Entrypoints
 
 subcommand requires an entrypoint exectuable to the command tree. This is created automatically by
 subcmd init. But it's simple to create your own. The simplest use is just to create an empty exectuble
