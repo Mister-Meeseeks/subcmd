@@ -7,6 +7,8 @@ Turn directory trees into Git-style CLI sub-commands
 
 ## Hello World
 
+## Companion Directory
+
 ## Directory Layout
 
 ## Help Messages
