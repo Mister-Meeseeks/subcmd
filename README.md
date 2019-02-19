@@ -5,7 +5,7 @@ subcmd allows you to combine multiple exectuables into a single sub-command stru
 platform is language agnostic, and works with any executable type. C binaries, shell scripts,
 python modules, or any mix of those or anything else.
 
-A directory tree that looks like this:
+A directory tree like this:
 
     /app
     |--gc
