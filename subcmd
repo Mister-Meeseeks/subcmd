@@ -16,6 +16,7 @@ function discoverTree() {
 function scanTreeSpec() {
     cat $entryPoint \
 	| egrep -v "^#" \
+	| egrep -v "^$" \
 	| tail -n 1
 }
 
@@ -61,6 +62,11 @@ function locateTreePath() {
     fi
 }
 
+function isAbsPath() {
+    local entryPoint=$1
+    (echo $entryPoint | egrep -q "^[/~]")
+}
+
 function relatePathFrom() {
     local entryPoint=$1
     local treeSpec=$2
@@ -71,7 +77,7 @@ function relatePathFrom() {
 
 function assertSpec() {
     local treePath=$1
-    if [[ -d $treePath ]] ; then
+    if [[ ! -d $treePath ]] ; then
 	echo "subcmd Error: User specified dir-tree path does not exist:" \
 	     $treePath >&2
 	exit 1
