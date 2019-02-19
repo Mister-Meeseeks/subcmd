@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+
+echo "A 2 liter of soda has been added to your order"

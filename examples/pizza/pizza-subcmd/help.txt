@@ -1,0 +1,8 @@
+pizza
+
+An interactive app for ordering pizza delivery.
+
+order - manage or create orders
+payment - billing and payments
+status - get status of your pizza delivery
+

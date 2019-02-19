@@ -7,6 +7,6 @@ else
     exit 1
 fi
 
-echo "You've paid $payment to your pizza bill."
-
+echo "You've paid \$$payment to your pizza bill."
+echo "Please wait several days for payment to clear."
 

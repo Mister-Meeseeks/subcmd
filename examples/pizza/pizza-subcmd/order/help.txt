@@ -1,0 +1,7 @@
+pizza-order
+
+Create new orders or manage existing ones. Feeling hungry?
+
+cancel - Cancel your current pizza order
+status - Get the status of your latest order
+new    - New order for delivery

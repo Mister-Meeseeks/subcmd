@@ -1,0 +1,7 @@
+pizza-payment
+
+Tool for managing your bills and payments with the pizza shop
+
+balance - Check your current account balance
+payment - Make a payment
+

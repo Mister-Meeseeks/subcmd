@@ -101,38 +101,83 @@ EOF
 
 function yellForHelp() {
     local descentDir=$1
-    echo "Command Help:" $cliArgs
-    if [[ -f $descentDir/help ]] ; then
-	cat $descentDir/help
-    elif [[ -f $descentDir/help.txt ]] ; then
-	cat $descentDir/help.txt
-    else
+    if ! attemptHelp $descentDir ; then
 	echo "subcmd Error: No Help file found at $descentDir" >&2
 	exit 1
     fi
 }
 
+function attemptHelp() {
+    local descentDir=$1
+    if [[ -f $descentDir/help ]] ; then
+	helpWithStream $descentDir <($descentDir/help $cliArgs)
+    elif [[ -f $descentDir/help.txt ]] ; then
+	helpWithStream $descentDir $descentDir/help.txt
+    else
+	helpWithStream $descentDir /dev/null
+	return 1
+    fi
+}
+
+function helpWithStream() {
+    local descentDir=$1
+    local helpStream=$2
+    local cmdName=$(basename $descentDir)
+    headerHelp $cmdName $helpStream  >&2
+    helpListSubCmds $descentDir $cmdName >&2
+}
+
+function headerHelp() {
+    local cmdName=$1
+    local helpPath=$2
+    echo "------ Command Help: $cmdName -------"
+    echo
+    cat $helpPath
+    echo
+}
+
+function helpListSubCmds()  {
+    local descentDir=$1
+    local cmdName=$2
+    echo "------ Valid Sub-Commands for $cmdName -----"
+    echo
+    listSubCmds $descentDir
+    echo
+    echo "--------------------------------------------"
+}
+
+function listSubCmds() {
+    local descentDir=$1
+    for sub in $(ls $descentDir) ; do
+	local subPath=$descentDir/$sub
+	if [[ -x $subPath || -d $subPath ]] ; then
+	    echo $sub
+	fi
+    done
+}
+
 function failNonExec() {
-    failWithReason $1/$2 "is not executable"
+    failWithReason $1 $2 "is not executable"
 }
 
 function failBrokenLink() {
-    failWithReason $1/$2 "is a broken link"
+    failWithReason $1 $2 "is a broken link"
 }
 
 function failMissing() {
-    failWithReason $1/$2 "does not exist"
+    failWithReason $1 $2 "does not exist"
 }
 
 function failDanglingDir() {
-    failWithReason $1 "is a directory"
+    failWithReason $1 "" "is a directory"
 }
 
 function failWithReason() {
-    local tryPath=$1
-    local reason=$2
-    echo "subcmd Error: $tryPath" $reason >&2
-    yellForHelp $tryPath
+    local baseDir=$1
+    local tryCmd=$2
+    local reason=$3
+    echo "subcmd Error: $baseDir/$tryCmd" $reason >&2
+    attemptHelp $baseDir
     exit 1
 }
 

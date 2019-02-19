@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+
+echo "A six-pack of beer has been added to your order"
