@@ -1,5 +1,5 @@
 
-#helloWorld
+# helloWorld
 
 Creates a single sub-command. Entrypoint is `./hello`. Let's try it:
 
