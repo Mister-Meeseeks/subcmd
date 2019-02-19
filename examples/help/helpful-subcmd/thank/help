@@ -1,0 +1,6 @@
+#!/bin/bash -eu
+
+echo "Sub-module for giving and receiving thanks"
+echo "Try it out $(whoami)"
+echo "Up to Date at $(date)"
+

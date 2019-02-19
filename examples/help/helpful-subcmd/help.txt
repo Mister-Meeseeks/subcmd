@@ -1,0 +1,10 @@
+
+helpful
+
+A nice little subcmd with some nice helpful help files.
+
+Root Level Commands:
+
+please - asks extra nice
+thank  - gratitude system
+
