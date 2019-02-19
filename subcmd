@@ -246,7 +246,6 @@ function helpWithStream() {
     local helpStream=$2
     local cmdName=$(basename $descentDir)
     headerHelp $cmdName $helpStream  >&2
-    listSubCmds $descentDir $cmdName >&2
 }
 
 function bestEffortNoHelp() {
@@ -259,9 +258,7 @@ function headerHelp() {
     local cmdName=$1
     local helpPath=$2
     echo "------ Command Help: $cmdName -------"
-    echo
     cat $helpPath
-    echo
 }
 
 function helpSubCmds() {
