@@ -1,0 +1,4 @@
+#!/usr/bin/env subcmd
+
+# There's no command tree named missing tree
+missingTree
