@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+
+echo "Server state snapped to back up. (Good idea!)"

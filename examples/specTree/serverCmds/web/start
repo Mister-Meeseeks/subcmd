@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+
+echo "Serving HTTP on port 80 (not really...)"

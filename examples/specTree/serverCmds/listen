@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+
+echo "Server up and listening for new clients"

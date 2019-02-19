@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+
+echo "Current server status: Make believe"

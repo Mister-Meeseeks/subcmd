@@ -1,0 +1,5 @@
+#!/usr/bin/env subcmd
+
+# Import an absolute directory
+/bin/
+

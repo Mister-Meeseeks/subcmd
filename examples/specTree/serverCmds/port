@@ -1,0 +1,10 @@
+#!/bin/bash -eu
+
+if [[ $# -gt 0 ]] ; then
+    portNum=$1
+else
+    portNum=0
+fi
+
+echo "Server binding to port $portNum"
+
