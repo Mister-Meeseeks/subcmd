@@ -1,4 +1,4 @@
-*helpful*
+## helpful
 
 Simple app to illustrate subcmd help messages.
 
