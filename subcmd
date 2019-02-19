@@ -36,7 +36,7 @@ function initTree() {
 	helpForCmd
     fi
     
-    local cmdTree=$entryPath-subCmd
+    local cmdTree=$entryPath-subcmd
     local specTree=""
     if [[ $# -ge 2 ]] ; then
 	local cmdTree=$2
@@ -202,6 +202,25 @@ HELP
 EOF
 }
 
+function isCmdLister() {
+    local subCmd=$1
+    listCmdWords | egrep -q "^$subCmd$"
+}
+
+function listCmdWords() {
+    cat <<EOF
+cmds
+Cmds
+CMDS
+-cmds
+-Cmds
+-CMDS
+--cmds
+--Cmds
+--CMDS
+EOF
+}
+
 function yellForHelp() {
     local descentDir=$1
     if ! attemptHelp $descentDir ; then
@@ -217,7 +236,7 @@ function attemptHelp() {
     elif [[ -f $descentDir/help.txt ]] ; then
 	helpWithStream $descentDir $descentDir/help.txt
     else
-	helpWithStream $descentDir /dev/null
+	bestEffortNoHelp $descentDir
 	return 1
     fi
 }
@@ -227,7 +246,13 @@ function helpWithStream() {
     local helpStream=$2
     local cmdName=$(basename $descentDir)
     headerHelp $cmdName $helpStream  >&2
-    helpListSubCmds $descentDir $cmdName >&2
+    listSubCmds $descentDir $cmdName >&2
+}
+
+function bestEffortNoHelp() {
+    local descentDir=$1
+    local cmdName=$(basename $descentDir)
+    listSubCmds $descentDir $cmdName >&2
 }
 
 function headerHelp() {
@@ -239,17 +264,23 @@ function headerHelp() {
     echo
 }
 
-function helpListSubCmds()  {
+function helpSubCmds() {
+    local descentDir=$1
+    local cmdName=$(basename $descentDir)
+    listSubCmds $descentDir $cmdName >&2
+}
+
+function listSubCmds()  {
     local descentDir=$1
     local cmdName=$2
     echo "------ Valid Sub-Commands for $cmdName -----"
     echo
-    listSubCmds $descentDir
+    findSubCmds $descentDir
     echo
     echo "--------------------------------------------"
 }
 
-function listSubCmds() {
+function findSubCmds() {
     local descentDir=$1
     for sub in $(ls $descentDir) ; do
 	local subPath=$descentDir/$sub
@@ -304,7 +335,11 @@ while [[ $# -gt 0 ]] ; do
     if isHelpCmd $1 ; then
 	yellForHelp $descent
 	exit 0
-    
+
+    elif isCmdLister $1 ; then
+	helpSubCmds $descent
+	exit 0
+	
     elif [[ -d $descent/$1 ]] ; then
 	descent=$descent/$1
 	shift
