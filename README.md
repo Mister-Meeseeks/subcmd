@@ -34,7 +34,7 @@ Run the install script to install to your system environment:
 Alternatively, if you're not ready to commit to a system install, just add the git repo
 to your shell $PATH.
 
-    export PATH=$PATH:$(readlink -f $0)
+    export PATH=$PATH:$(readlink -f .)
 
 ## Hello World
 
