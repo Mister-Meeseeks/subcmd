@@ -36,6 +36,11 @@ EOF
 }
 
 function initTree() {
+    if [[ $# -eq 0 ]] ; then
+        helpForCmd
+        exit 1
+    fi
+    
     local entryPath=$1
     if isHelpCmd "$entryPath" ; then
 	helpForCmd
@@ -292,7 +297,7 @@ function listSubCmds()  {
 function findSubCmds() {
     local descentDir=$1
     shopt -s nullglob
-    for subPath in $descentDir/* ; do
+    for subPath in "$descentDir"/* ; do
 	if [[ -x "$subPath" || -d "$subPath" ]] ; then
 	    basename "$subPath"
 	fi
