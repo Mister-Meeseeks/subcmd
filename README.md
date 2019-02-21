@@ -142,6 +142,30 @@ Some other details:
   * Non-exectuable files are ignored.
   * Directory or filenames with whitespace or quotes is not supported.
 
+## env.sh
+
+subcmd provides a hook for consolidating a common environment. It can be set either for the entire command 
+tree, or a specific subtree. Or both. Just add a non-exectuable bash-compatible source file named `env.sh`
+at any directory in the command tree. If present a subcmd call will '.'-source into the shell environment
+before executing any terminal command underneath that directory.
+
+`env.sh` can be added at the root of the command tree and will apply across the entire subcommand app.
+Or it can be added inside a composite subcommand and will apply across all child subcommands. Multiple
+`env.sh` in the call will be added starting at the root and ending at the node. E.g. the follwing command
+
+    $ myApp snap crackle pop
+
+Will '.'-source in this order,
+
+* `[cmdTree root]/env.sh` (if exists)
+* `[cmdTree root]/snap/env.sh` (if exists)
+* `[cmdTree root]/snap/crackle/env.sh` (if exists)
+
+One typical use for `env.sh` is to set environment variables. Another is to define and export shell 
+functions to act as a shared library between all the subcommand scripts. But any bash compatible
+code can be used to run before the exectuable. Things like creating temporary files, setting signal
+handlers, printing startup messages, etc.
+
 ## CMD List
 
 submcd allows for the CMD keyword directive to be added to any composite subcommand in a command tree.
