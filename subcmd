@@ -33,7 +33,7 @@ EOF
 
 function initTree() {
     local entryPath=$1
-    if isHelpCmd $entryPath ; then
+    if isHelpCmd "$entryPath" ; then
 	helpForCmd
     fi
     
@@ -44,18 +44,18 @@ function initTree() {
 	local specTree=$cmdTree
     fi
     
-    assertFreshInit $entryPath $cmdTree
-    createFresh $entryPath $cmdTree "$specTree"
+    assertFreshInit "$entryPath" "$cmdTree"
+    createFresh "$entryPath" "$cmdTree" "$specTree"
 }
 
 function assertFreshInit() {
     local entryPath=$1
     local cmdTree=$2
-    if [[ -e $entryPath ]] ; then
+    if [[ -e "$entryPath" ]] ; then
 	echo "subcmd Error: Cannot init - entryPath already exists -" \
 	     "$entryPath" >&2
 	exit 1
-    elif [[ -e $cmdTree ]] ; then
+    elif [[ -e "$cmdTree" ]] ; then
 	echo "subcmd Error: Cannot init - cmdTree already exists -" \
 	     "$cmdTree" >&2
 	exit 1
@@ -66,17 +66,17 @@ function createFresh() {
     local entryPath=$1
     local cmdTree=$2
     local specTree=$3
-    formEntryContent $specTree > $entryPath
-    chmod a+rx $entryPath
-    mkdir $cmdTree
-    declareInit $entryPath $cmdTree >&2
+    formEntryContent "$specTree" > "$entryPath"
+    chmod a+rx "$entryPath"
+    mkdir "$cmdTree"
+    declareInit "$entryPath" "$cmdTree" >&2
 }
 
 function formEntryContent() {
     echo "#!/usr/bin/env subcmd"
     echo
     if [[ $# -ge 1 ]] ; then
-	echo $1
+	echo "$1"
     fi
 }
 
@@ -86,50 +86,50 @@ function declareInit() {
     echo "New subcmd tree initialized."
     echo
     echo "To create sub-commands add executables to the cmdTree:"
-    echo $(formatExecView $cmdTree/)
+    echo $(formatExecView "$cmdTree/")
     echo
     echo "Command can be invoked by calling the entrypoint at: "
-    echo $(formatExecView $entryPath)
+    echo $(formatExecView "$entryPath")
     echo
 }
 
 function formatExecView() {
     local entryPath=$1
-    if isAbsPath $entryPath ; then
-	echo $entryPath
+    if isAbsPath "$entryPath" ; then
+	echo "$entryPath"
     else
-	echo ./$entryPath
+	echo "./$entryPath"
     fi
 }
 
 function discoverTree() {
     local treeSpec=$(scanTreeSpec)
-    if [[ -z $treeSpec ]] ; then
-	companionTree $entryPoint
+    if [[ -z "$treeSpec" ]] ; then
+	companionTree "$entryPoint"
     else
-	resolveSpec $entryPoint $treeSpec
+	resolveSpec "$entryPoint" "$treeSpec"
     fi
 }
 
 function scanTreeSpec() {
-    cat $entryPoint \
-	| egrep -v "^#" \
-	| egrep -v "^$" \
+    cat "$entryPoint" \
+	| grep -E -v "^#" \
+	| grep -E -v "^$" \
 	| tail -n 1
 }
 
 function companionTree() {
     local entryPoint=$1
-    local companionTree=$(formCompanion $entryPoint)
-    assertCompanion $companionTree
-    echo $companionTree
+    local companionTree=$(formCompanion "$entryPoint")
+    assertCompanion "$companionTree"
+    echo "$companionTree"
 }
 
 function assertCompanion() {
     local companionTree=$1
-    if [[ ! -d $companionTree ]] ; then
+    if [[ ! -d "$companionTree" ]] ; then
 	echo "subcmd Error: No dir-tree specified and companion directory" \
-	     "does not exist:" $companionTree >&2
+	     "does not exist:" "$companionTree" >&2
 	exit 1
     fi
     
@@ -137,54 +137,54 @@ function assertCompanion() {
 
 function formCompanion() {
     local entryPoint=$1
-    local canonEntry=$(readlink -f $entryPoint)
-    echo $(dirname $canonEntry)/$(basename $canonEntry)-subcmd/
+    local canonEntry=$(readlink -f "$entryPoint")
+    echo $(dirname "$canonEntry")/$(basename "$canonEntry")-subcmd/
 }
 
 
 function resolveSpec() {
     local entryPoint=$1
     local treeSpec=$2
-    local treePath=$(locateTreePath $entryPoint $treeSpec)
-    assertSpec $treePath
-    echo $treePath
+    local treePath=$(locateTreePath "$entryPoint" "$treeSpec")
+    assertSpec "$treePath"
+    echo "$treePath"
 }
 
 function locateTreePath() {
     local entryPoint=$1
     local treeSpec=$2
-    if isAbsPath $treeSpec ; then
-	echo $treeSpec
+    if isAbsPath "$treeSpec" ; then
+	echo "$treeSpec"
     else
-	relatePathFrom $entryPoint $treeSpec
+	relatePathFrom "$entryPoint" "$treeSpec"
     fi
 }
 
 function isAbsPath() {
     local entryPoint=$1
-    (echo $entryPoint | egrep -q "^[/~]")
+    (echo "$entryPoint" | grep -E -q "^[/~]")
 }
 
 function relatePathFrom() {
     local entryPoint=$1
     local treeSpec=$2
-    local canonEntry=$(readlink -f $entryPoint)
-    local rootDir=$(dirname $canonEntry)
-    echo $rootDir/$treeSpec
+    local canonEntry=$(readlink -f "$entryPoint")
+    local rootDir=$(dirname "$canonEntry")
+    echo "$rootDir/$treeSpec"
 }
 
 function assertSpec() {
     local treePath=$1
     if [[ ! -d $treePath ]] ; then
 	echo "subcmd Error: User specified dir-tree path does not exist:" \
-	     $treePath >&2
+	     "$treePath" >&2
 	exit 1
     fi
 }
 
 function isHelpCmd() {
     local subCmd=$1
-    listHelpWords | egrep -q "^$subCmd$"
+    listHelpWords | grep -E -v -q "^$subCmd$"
 }
 
 function listHelpWords() {
@@ -231,7 +231,7 @@ EOF
 
 function yellForHelp() {
     local descentDir=$1
-    if ! attemptHelp $descentDir ; then
+    if ! attemptHelp "$descentDir" ; then
 	echo "subcmd Error: No Help file found at $descentDir" >&2
 	exit 1
     fi
@@ -239,12 +239,12 @@ function yellForHelp() {
 
 function attemptHelp() {
     local descentDir=$1
-    if [[ -f $descentDir/help ]] ; then
-	helpWithStream $descentDir <($descentDir/help $cliArgs)
+    if [[ -f "$descentDir/help" ]] ; then
+	helpWithStream "$descentDir" <($descentDir/help $cliArgs)
     elif [[ -f $descentDir/help.txt ]] ; then
-	helpWithStream $descentDir $descentDir/help.txt
+	helpWithStream "$descentDir" "$descentDir/help.txt"
     else
-	bestEffortNoHelp $descentDir
+	bestEffortNoHelp "$descentDir"
 	return 1
     fi
 }
@@ -252,27 +252,27 @@ function attemptHelp() {
 function helpWithStream() {
     local descentDir=$1
     local helpStream=$2
-    local cmdName=$(basename $descentDir)
-    headerHelp $cmdName $helpStream  >&2
+    local cmdName=$(basename "$descentDir")
+    headerHelp "$cmdName" "$helpStream"  >&2
 }
 
 function bestEffortNoHelp() {
     local descentDir=$1
-    local cmdName=$(basename $descentDir)
-    listSubCmds $descentDir $cmdName >&2
+    local cmdName=$(basename "$descentDir")
+    listSubCmds "$descentDir" "$cmdName" >&2
 }
 
 function headerHelp() {
     local cmdName=$1
     local helpPath=$2
     echo "------ Command Help: $cmdName -------"
-    cat $helpPath
+    cat "$helpPath"
 }
 
 function helpSubCmds() {
     local descentDir=$1
-    local cmdName=$(basename $descentDir)
-    listSubCmds $descentDir $cmdName >&2
+    local cmdName=$(basename "$descentDir")
+    listSubCmds "$descentDir" "$cmdName" >&2
 }
 
 function listSubCmds()  {
@@ -280,7 +280,7 @@ function listSubCmds()  {
     local cmdName=$2
     echo "------ Valid Sub-Commands for $cmdName -----"
     echo
-    findSubCmds $descentDir
+    findSubCmds "$descentDir"
     echo
     echo "--------------------------------------------"
 }
@@ -289,44 +289,44 @@ function findSubCmds() {
     local descentDir=$1
     shopt -s nullglob
     for subPath in $descentDir/* ; do
-	if [[ -x $subPath || -d $subPath ]] ; then
-	    echo $(basename $subPath)
+	if [[ -x "$subPath" || -d "$subPath" ]] ; then
+	    basename "$subPath"
 	fi
     done
 }
 
 function failNonExec() {
-    failWithReason $1 $2 "is not executable"
+    failWithReason "$1" "$2" "is not executable"
 }
 
 function failBrokenLink() {
-    failWithReason $1 $2 "is a broken link"
+    failWithReason "$1" "$2" "is a broken link"
 }
 
 function failMissing() {
-    failWithReason $1 $2 "does not exist"
+    failWithReason "$1" "$2" "does not exist"
 }
 
 function failDanglingDir() {
-    failWithReason $1 "" "is a directory"
+    failWithReason "$1" "" "is a directory"
 }
 
 function failWithReason() {
     local baseDir=$1
     local tryCmd=$2
     local reason=$3
-    echo "subcmd Error: $baseDir/$tryCmd" $reason >&2
-    attemptHelp $baseDir
+    echo "subcmd Error: $baseDir/$tryCmd $reason" >&2
+    attemptHelp "$baseDir"
     exit 1
 }
 
 ## help mode for subcmd itself
-if isHelpCmd $entryPoint ; then
+if isHelpCmd "$entryPoint" ; then
     helpForCmd
 fi
 
 ## init mode - prepare a new subcmd tree
-if [[ $entryPoint == "init" ]] ; then
+if [[ "$entryPoint" == "init" ]] ; then
     initTree $@
     exit 0
 fi
@@ -337,34 +337,34 @@ descent=$cmdTree
 
 while [[ $# -gt 0 ]] ; do
 
-    if isHelpCmd $1 ; then
-	yellForHelp $descent
+    if isHelpCmd "$1" ; then
+	yellForHelp "$descent"
 	exit 0
 
-    elif isCmdLister $1 ; then
-	helpSubCmds $descent
+    elif isCmdLister "$1" ; then
+	helpSubCmds "$descent"
 	exit 0
 	
-    elif [[ -d $descent/$1 ]] ; then
-	descent=$descent/$1
+    elif [[ -d "$descent/$1" ]] ; then
+	descent="$descent/$1"
 	shift
 	
-    elif [[ -x $descent/$1 ]] ; then
-	executor=$descent/$1
+    elif [[ -x "$descent/$1" ]] ; then
+	executor="$descent/$1"
 	shift
 	$executor $@
 	exit 0
 	
-    elif [[ -e $descent/$1 ]] ; then
-	failNonExec $descent $1
+    elif [[ -e "$descent/$1" ]] ; then
+	failNonExec "$descent" "$1"
 	
-    elif [[ -L $descent/$1 ]] ; then
-	failBrokenLink $descent $1
+    elif [[ -L "$descent/$1" ]] ; then
+	failBrokenLink "$descent" "$1"
 	
     else
-	failMissing $descent $1
+	failMissing "$descent" "$1"
     fi
 done
 
-failDanglingDir $descent
-	
+failDanglingDir "$descent"
+
