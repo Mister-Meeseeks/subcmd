@@ -1,5 +1,5 @@
 #!/bin/bash -eu
 
-export SPORTS_PICK=soccer
+export SPORTS_PICK=track
 
 declareAnswer

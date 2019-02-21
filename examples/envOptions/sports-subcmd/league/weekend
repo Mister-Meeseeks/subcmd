@@ -1,5 +1,3 @@
 #!/bin/bash -eu
 
-export SPORTS_PICK=volleyball
-
-declareAnswer
+declareAnswer volleyball

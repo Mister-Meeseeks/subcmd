@@ -1,4 +1,4 @@
 
 export SPORTS_TYPE=team
-export SPORTS_PICK=softball
+export SPORTS_GOAL=fun
 

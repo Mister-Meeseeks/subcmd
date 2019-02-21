@@ -1,5 +1,0 @@
-#!/bin/bash -eu
-
-export SPORTS_PICK=iceskating
-
-declareAnswer

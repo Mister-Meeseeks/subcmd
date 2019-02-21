@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
 export SPORTS_GOAL="showing off"
-export SPORTS_PICK=lacrosse
+export SPORTS_PICK=yachting
 
 declareAnswer
