@@ -1,6 +1,0 @@
-#!/bin/bash -eu
-
-export SPORTS_TYPE=team
-export SPORTS_PICK=soccer
-
-declareAnswer
