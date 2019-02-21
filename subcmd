@@ -249,7 +249,7 @@ function yellForHelp() {
 function attemptHelp() {
     local descentDir=$1
     if [[ -f "$descentDir/help" ]] ; then
-	helpWithStream "$descentDir" <($descentDir/help $cliArgs)
+	helpWithStream "$descentDir" <("$descentDir"/help $cliArgs)
     elif [[ -f $descentDir/help.txt ]] ; then
 	helpWithStream "$descentDir" "$descentDir/help.txt"
     else
