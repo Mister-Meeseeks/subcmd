@@ -336,7 +336,7 @@ fi
 
 ## init mode - prepare a new subcmd tree
 if [[ "$entryPoint" == "init" ]] ; then
-    initTree $@
+    initTree "$@"
     exit 0
 fi
 
@@ -361,7 +361,7 @@ while [[ $# -gt 0 ]] ; do
     elif [[ -x "$descent/$1" ]] ; then
 	executor="$descent/$1"
 	shift
-	$executor $@
+	$executor "$@"
 	exit 0
 	
     elif [[ -e "$descent/$1" ]] ; then
