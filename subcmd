@@ -287,10 +287,10 @@ function listSubCmds()  {
 
 function findSubCmds() {
     local descentDir=$1
-    for sub in $(ls $descentDir) ; do
-	local subPath=$descentDir/$sub
+    shopt -s nullglob
+    for subPath in $descentDir/* ; do
 	if [[ -x $subPath || -d $subPath ]] ; then
-	    echo $sub
+	    echo $(basename $subPath)
 	fi
     done
 }
