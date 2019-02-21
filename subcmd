@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 set -eu
 
-entryPoint=$1
-shift;
+if [[ $# -eq 0 ]] ; then
+    entryPoint=help
+else
+    entryPoint=$1
+    shift;
+fi
 cliArgs=$@
 
 function helpForCmd() {
@@ -52,11 +56,11 @@ function assertFreshInit() {
     local entryPath=$1
     local cmdTree=$2
     if [[ -e "$entryPath" ]] ; then
-	echo "subcmd Error: Cannot init - entryPath already exists -" \
+	echo "subcmd Error: Cannot init - entryPath already exists:" \
 	     "$entryPath" >&2
 	exit 1
     elif [[ -e "$cmdTree" ]] ; then
-	echo "subcmd Error: Cannot init - cmdTree already exists -" \
+	echo "subcmd Error: Cannot init - cmdTree already exists:" \
 	     "$cmdTree" >&2
 	exit 1
     fi
@@ -184,7 +188,7 @@ function assertSpec() {
 
 function isHelpCmd() {
     local subCmd=$1
-    listHelpWords | grep -E -v -q "^$subCmd$"
+    listHelpWords | grep -E -q "^$subCmd$"
 }
 
 function listHelpWords() {
@@ -205,7 +209,7 @@ EOF
 
 function isCmdLister() {
     local subCmd=$1
-    listCmdWords | egrep -q "^$subCmd$"
+    listCmdWords | grep -E -q "^$subCmd$"
 }
 
 function listCmdWords() {
