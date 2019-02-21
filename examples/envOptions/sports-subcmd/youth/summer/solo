@@ -1,0 +1,5 @@
+#!/bin/bash -eu
+
+export SPORTS_TYPE=solo
+
+declareAnswer

@@ -329,6 +329,14 @@ function failWithReason() {
     exit 1
 }
 
+function sourceTreeEnv() {
+    local descentDir=$1
+    envPath="$descentDir/env.sh"
+    if [[ -e "$envPath" && ! -x "$envPath" ]] ; then
+        . $envPath
+    fi
+}
+
 ## help mode for subcmd itself
 if isHelpCmd "$entryPoint" ; then
     helpForCmd
@@ -345,6 +353,7 @@ cmdTree=$(discoverTree)
 descent=$cmdTree
 
 while [[ $# -gt 0 ]] ; do
+    sourceTreeEnv "$descent"
 
     if isHelpCmd "$1" ; then
 	yellForHelp "$descent"
