@@ -51,19 +51,18 @@ Let's create our first sub-command app. Initialize a new subcmd tree from the co
     ./hello
 
 Now let's try out our new sub-command. We list out what sub-commands are available with the
-`CMD` directive. From the shell:
+`CMD` directive. And see an empty tree. From the shell:
 
-    ./hello CMD
+    $ ./hello CMD
     
-You'll see we have an empty subcommand tree.
-
     ------- Valid Sub-Commands for hello-subcmd -----
+    --------------------------------------------------
 
 Let's make a subcommand. Create an exectuable inside the subcommand tree. From the shell:
 
     touch hello-subcmd/world && chmod u+x hello-subcmd/world
     
-Now in your favorite editor open the new file at `hello-subcmd/world`, and add the following
+Now in your favorite editor create the file at *hello-subcmd/world* with content:
 
     #!/bin/bash
     
@@ -76,12 +75,10 @@ Now, let's check our entry point, from the command line:
     world
     --------------------------------------------
 
-Alright! Now let's try the subcommand that. From the command line:
+Alright! Now let's try running the new subcommand.
 
     $ ./hello world
     Hello, World!
-   
-There we go. Our first subcmd app. To explore more, check out the examples/ dir in the repo.
 
 ## Install
 
