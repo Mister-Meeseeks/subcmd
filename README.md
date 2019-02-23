@@ -60,7 +60,9 @@ Let's make a subcommand. Create an exectuable inside the subcommand tree. From t
 
     touch hello-subcmd/world && chmod u+x hello-subcmd/world
     
-Now in your favorite editor create the file at *hello-subcmd/world* with content:
+Now in your favorite editor create the following file with content:
+
+*./hello-subcmd/world*
 
     #!/bin/bash
     echo "Hello, World!"
