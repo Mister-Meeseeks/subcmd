@@ -63,7 +63,6 @@ Let's make a subcommand. Create an exectuable inside the subcommand tree. From t
 Now in your favorite editor create the file at *hello-subcmd/world* with content:
 
     #!/bin/bash
-    
     echo "Hello, World!"
 
 Now, let's check our entry point, from the command line:
