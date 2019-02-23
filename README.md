@@ -237,4 +237,4 @@ created command tree. Just create an exectuable at `/usr/bin/myApp` and set its 
 ## Dependencies
 
 * bash
-* Linux-style readlink (sorry BSD and MacOS)
+* Linux/GNU compatible readlink (sorry BSD and MacOS)
