@@ -56,8 +56,7 @@ Now let's try out our new sub-command. We list out what sub-commands are availab
     $ ./hello CMD
     
     ------- Valid Sub-Commands for hello-subcmd -----
-    --------------------------------------------------
-
+  
 Let's make a subcommand. Create an exectuable inside the subcommand tree. From the shell:
 
     touch hello-subcmd/world && chmod u+x hello-subcmd/world
@@ -73,7 +72,6 @@ Now, let's check our entry point, from the command line:
     $ ./hello CMD
     ------ Valid Sub-Commands for hello-subcmd -----
     world
-    --------------------------------------------
 
 Alright! Now let's try running the new subcommand.
 
