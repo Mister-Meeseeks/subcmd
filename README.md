@@ -40,10 +40,8 @@ to your shell $PATH.
 
 Let's create our first sub-command app. Initialize a new subcmd tree from the command line with
 
-    subcmd init hello
+    $ subcmd init hello
     
-You should see something like:
-
     New subcmd tree initialized.
     
     To create sub-commands add executables to the cmdTree:
