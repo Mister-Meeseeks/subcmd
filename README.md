@@ -54,7 +54,6 @@ Now let's try out our new sub-command. We list out what sub-commands are availab
 `CMD` directive. And see an empty tree. From the shell:
 
     $ ./hello CMD
-    
     ------- Valid Sub-Commands for hello-subcmd -----
   
 Let's make a subcommand. Create an exectuable inside the subcommand tree. From the shell:
