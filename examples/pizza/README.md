@@ -1,5 +1,5 @@
 
-* pizza *
+# pizza
 
 A simple app incorporating most of subcmd's features. How about a pizza?
 Yum yum!
